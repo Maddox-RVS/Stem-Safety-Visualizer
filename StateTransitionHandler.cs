@@ -32,12 +32,12 @@ namespace StemSolvers
         {
             this.stemLength = robot.getTelescopePixels();
             this.pivotRadians = robot.getPivotDegrees() * DEGREES_TO_RADIANS;
-            this.wristLength = robot.getWristLength() / 2;
+            this.wristLength = robot.getWristLength() * 0.8f;
             this.wristRadians = robot.getWristDegrees() * DEGREES_TO_RADIANS;
             this.driveBaseRectangle = robot.getDriveBaseRect();
         }
 
-        public void transiionTo(RoboState state)
+        public void transitionTo(RoboState state)
         {
             if (isValidState(state))
                 targetState = state;

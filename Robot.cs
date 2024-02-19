@@ -170,7 +170,7 @@ namespace StemSolvers
             null,
             Color.LightGray,
             (targetWristRads - targetPivotRads) - (90 * DEGREES_TO_RADIANS),
-            new Vector2(0.0f, 0.5f),
+            new Vector2(0.0f, 0.2f),
             SpriteEffects.None, 
             0);
 
@@ -197,7 +197,7 @@ namespace StemSolvers
             null,
             Color.CornflowerBlue,
             (currentWristRads - currentPivotRads) - (90 * DEGREES_TO_RADIANS),
-            new Vector2(0.0f, 0.5f),
+            new Vector2(0.0f, 0.2f),
             SpriteEffects.None, 
             0);
 

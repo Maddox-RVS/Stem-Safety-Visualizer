@@ -65,11 +65,11 @@ namespace StemSolvers
             robot.update();
             stateTransitionHandler.update();
 
-            if (Keyboard.GetState().IsKeyDown(Keys.E)) stateTransitionHandler.transiionTo(new RoboState(-30, -30, 400));
-            else if (Keyboard.GetState().IsKeyDown(Keys.A)) stateTransitionHandler.transiionTo(new RoboState(100, 30, 200));
-            else if (Keyboard.GetState().IsKeyDown(Keys.D)) stateTransitionHandler.transiionTo(new RoboState(20, 50, 400));
-            else if (Keyboard.GetState().IsKeyDown(Keys.W)) stateTransitionHandler.transiionTo(new RoboState(0, 50, 400));
-            else if (Keyboard.GetState().IsKeyDown(Keys.S)) stateTransitionHandler.transiionTo(new RoboState(17, 90, 150));
+            if (Keyboard.GetState().IsKeyDown(Keys.E)) stateTransitionHandler.transitionTo(new RoboState(-30, -30, 400));
+            else if (Keyboard.GetState().IsKeyDown(Keys.A)) stateTransitionHandler.transitionTo(new RoboState(100, 30, 200));
+            else if (Keyboard.GetState().IsKeyDown(Keys.D)) stateTransitionHandler.transitionTo(new RoboState(20, 50, 400));
+            else if (Keyboard.GetState().IsKeyDown(Keys.W)) stateTransitionHandler.transitionTo(new RoboState(0, 50, 400));
+            else if (Keyboard.GetState().IsKeyDown(Keys.S)) stateTransitionHandler.transitionTo(new RoboState(30, 90, 150));
 
             base.Update(gameTime);
         }
