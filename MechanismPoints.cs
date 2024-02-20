@@ -29,39 +29,33 @@ namespace StemSolvers
                 state.getTelescopePixels() * (float)Math.Sin(state.getPivotDegrees() * DEGREES_TO_RADIANS));
 
             Vector2 umbrellaLengthVector = new Vector2(
-                robot.getUmbrellaLength() * -(float)Math.Cos((state.getWristDegrees() * DEGREES_TO_RADIANS) + (state.getPivotDegrees() * DEGREES_TO_RADIANS)),
-                robot.getUmbrellaLength() * -(float)Math.Sin((state.getWristDegrees() * DEGREES_TO_RADIANS) + (state.getPivotDegrees() * DEGREES_TO_RADIANS)));
+                robot.getUmbrellaLength() * (float)Math.Cos((180 - (180 - state.getWristDegrees()) - state.getPivotDegrees()) * DEGREES_TO_RADIANS),
+                robot.getUmbrellaLength() * -(float)Math.Sin((180 - (180 - state.getWristDegrees()) - state.getPivotDegrees()) * DEGREES_TO_RADIANS));
 
             wristAxelPoint.X += robot.getTelescopeRect().X;
             wristAxelPoint.Y += robot.getTelescopeRect().Y;
 
-            Debug.WriteLine(state.getWristDegrees());
-            Debug.WriteLine(state.getPivotDegrees());
             Vector2 umbrellaBottomLeftPoint = new Vector2(
-                robot.getWristOffsetLength() * (float)Math.Cos((state.getWristDegrees() * DEGREES_TO_RADIANS) + (state.getPivotDegrees() * DEGREES_TO_RADIANS)),
-                robot.getWristOffsetLength() * (float)Math.Sin((state.getWristDegrees() * DEGREES_TO_RADIANS) + (state.getPivotDegrees() * DEGREES_TO_RADIANS)));
-            Debug.WriteLine(umbrellaBottomLeftPoint.ToString());
+                robot.getWristOffsetLength() * (float)Math.Cos((state.getPivotDegrees() * DEGREES_TO_RADIANS) + (90 * DEGREES_TO_RADIANS) - (state.getWristDegrees() * DEGREES_TO_RADIANS)),
+                robot.getWristOffsetLength() * (float)Math.Sin((state.getPivotDegrees() * DEGREES_TO_RADIANS) + (90 * DEGREES_TO_RADIANS) - (state.getWristDegrees() * DEGREES_TO_RADIANS)));
             umbrellaBottomLeftPoint += wristAxelPoint;
-            
-            Debug.WriteLine(wristAxelPoint.ToString());
-            Debug.WriteLine(umbrellaBottomLeftPoint.ToString() + "\n");
 
             Vector2 umbrellaBottomRightPoint = umbrellaBottomLeftPoint + umbrellaLengthVector;
 
             Vector2 umbrellaTopRightPoint = new Vector2(
-                robot.getUmbrellaHeight() * (float)Math.Sin((state.getWristDegrees() * DEGREES_TO_RADIANS) + (state.getPivotDegrees() * DEGREES_TO_RADIANS)),
-                robot.getUmbrellaHeight() * -(float)Math.Cos((state.getWristDegrees() * DEGREES_TO_RADIANS) + (state.getPivotDegrees() * DEGREES_TO_RADIANS)));
+                robot.getUmbrellaHeight() * (float)Math.Cos((state.getPivotDegrees() * DEGREES_TO_RADIANS) + (90 * DEGREES_TO_RADIANS) - (state.getWristDegrees() * DEGREES_TO_RADIANS)),
+                robot.getUmbrellaHeight() * (float)Math.Sin((state.getPivotDegrees() * DEGREES_TO_RADIANS) + (90 * DEGREES_TO_RADIANS) - (state.getWristDegrees() * DEGREES_TO_RADIANS)));
             umbrellaTopRightPoint += umbrellaBottomRightPoint;
 
             Vector2 umbrellaTopLeftPoint = new Vector2(
-                robot.getUmbrellaHeight() * (float)Math.Sin((state.getWristDegrees() * DEGREES_TO_RADIANS) + (state.getPivotDegrees() * DEGREES_TO_RADIANS)),
-                robot.getUmbrellaHeight() * -(float)Math.Cos((state.getWristDegrees() * DEGREES_TO_RADIANS) + (state.getPivotDegrees() * DEGREES_TO_RADIANS)));
+                robot.getUmbrellaHeight() * (float)Math.Cos((state.getPivotDegrees() * DEGREES_TO_RADIANS) + (90 * DEGREES_TO_RADIANS) - (state.getWristDegrees() * DEGREES_TO_RADIANS)),
+                robot.getUmbrellaHeight() * (float)Math.Sin((state.getPivotDegrees() * DEGREES_TO_RADIANS) + (90 * DEGREES_TO_RADIANS) - (state.getWristDegrees() * DEGREES_TO_RADIANS)));
             umbrellaTopLeftPoint += umbrellaBottomLeftPoint;
 
             this.wristAxelPoint = wristAxelPoint;
-            this.umbrellaBottomRightPoint = umbrellaBottomRightPoint *0;
-            this.umbrellaTopRightPoint = umbrellaTopRightPoint *0;
-            this.umbrellaTopLeftPoint = umbrellaTopLeftPoint *0;
+            this.umbrellaBottomRightPoint = umbrellaBottomRightPoint;
+            this.umbrellaTopRightPoint = umbrellaTopRightPoint;
+            this.umbrellaTopLeftPoint = umbrellaTopLeftPoint;
             this.umbrellaBottomLeftPoint = umbrellaBottomLeftPoint;
         }
 

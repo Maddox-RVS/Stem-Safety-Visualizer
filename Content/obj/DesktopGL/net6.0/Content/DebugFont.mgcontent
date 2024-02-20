@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>E:/Saves NEW PC/Logo/Programs/C# Programs/StemSolvers/Content/DebugFont.spritefont</SourceFile>
-  <SourceTime>2024-02-18T11:15:29.8360882-05:00</SourceTime>
-  <DestFile>E:/Saves NEW PC/Logo/Programs/C# Programs/StemSolvers/Content/bin/DesktopGL/Content/DebugFont.xnb</DestFile>
-  <DestTime>2024-02-19T22:37:18.1473919-05:00</DestTime>
+  <SourceFile>C:/Users/Babbage/Desktop/Programs/C# Workspace/Stem-Safety-Visualizer/Content/DebugFont.spritefont</SourceFile>
+  <SourceTime>2024-02-19T16:13:00.3405256-05:00</SourceTime>
+  <DestFile>C:/Users/Babbage/Desktop/Programs/C# Workspace/Stem-Safety-Visualizer/Content/bin/DesktopGL/Content/DebugFont.xnb</DestFile>
+  <DestTime>2024-02-20T15:31:05.6248383-05:00</DestTime>
   <Importer>FontDescriptionImporter</Importer>
   <ImporterTime>2022-07-26T07:44:56-04:00</ImporterTime>
   <Processor>FontDescriptionProcessor</Processor>
