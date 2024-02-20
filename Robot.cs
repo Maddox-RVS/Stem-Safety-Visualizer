@@ -18,9 +18,11 @@ namespace StemSolvers
         private RenderTarget2D subsystemsRenderTarget, driveBaseRenderTarget;
         private bool hasCollidedWithDriveBase;
         private float wristLength;
+        private float wristHeight;
+        private float wristOffsetLength;
         private Texture2D texture;
         private Vector2 roboPos;
-
+        public float backWallBoundX, frontWallBoundX, roofBoundY, floorBoundY;
 
         public Robot(Texture2D texture, Vector2 position, float pivotSpeedDegsPerSec, float wristSpeedDegsPerSec, float telescopePixelSpeed, GraphicsDevice graphicsDevice)
         {
@@ -28,6 +30,13 @@ namespace StemSolvers
             this.texture = texture;
 
             wristLength = 100f;
+            wristHeight = 50f;
+            wristOffsetLength = 15f;
+
+            backWallBoundX = 40.0f;
+            frontWallBoundX = 650.0f;
+            roofBoundY = 150.0f;
+            floorBoundY = Game1.screenBounds.Height; // should be 0 in real life
 
             targetPivotRads = 0.0f * DEGREES_TO_RADIANS;
             targetWristRads = 50.0f * DEGREES_TO_RADIANS;
@@ -90,9 +99,17 @@ namespace StemSolvers
         {
             return currentTelescopePixels;
         }
-        public float getWristLength()
+        public float getUmbrellaLength()
         {
             return wristLength;
+        }
+        public float getUmbrellaHeight()
+        {
+            return wristHeight;
+        }
+        public float getWristOffsetLength()
+        {
+            return wristOffsetLength;
         }
 
         public bool hasReachedTarget()
@@ -163,14 +180,16 @@ namespace StemSolvers
             SpriteEffects.None, 
             0);
 
+            MechanismPoints mechPtsTarget = new MechanismPoints(new RoboState(targetPivotRads * RADIANS_TO_DEGREES, targetWristRads * RADIANS_TO_DEGREES, targetTelescopePixels), this);
+
             //Draws the wrist at the wrist degrees
             spriteBatch.Draw(
             texture,
-            new Rectangle((int) (targetTelescopePixels * Math.Cos(-targetPivotRads)) + getTelescopeRect().X, (int) (targetTelescopePixels * Math.Sin(-targetPivotRads)) + getTelescopeRect().Y, 50, (int) wristLength),
+            new Rectangle((int)(mechPtsTarget.umbrellaBottomLeftPoint.X), (int)(mechPtsTarget.umbrellaBottomLeftPoint.Y), (int)wristHeight, (int)wristLength),
             null,
             Color.LightGray,
             (targetWristRads - targetPivotRads) - (90 * DEGREES_TO_RADIANS),
-            new Vector2(0.0f, 0.2f),
+            new Vector2(0.0f, 0.0f),
             SpriteEffects.None, 
             0);
 
@@ -190,14 +209,16 @@ namespace StemSolvers
             SpriteEffects.None, 
             0);
 
+            MechanismPoints mechPtsCurrent = new MechanismPoints(new RoboState(getPivotDegrees(), getWristDegrees(), getTelescopePixels()), this);
+
             //Draws the wrist at the wrist degrees
             spriteBatch.Draw(
             texture,
-            new Rectangle((int) (currentTelescopePixels * Math.Cos(-currentPivotRads)) + getTelescopeRect().X, (int) (currentTelescopePixels * Math.Sin(-currentPivotRads)) + getTelescopeRect().Y, 50, (int) wristLength),
+            new Rectangle((int) (mechPtsCurrent.umbrellaBottomLeftPoint.X), (int) (mechPtsCurrent.umbrellaBottomLeftPoint.Y), (int) wristHeight, (int) wristLength),
             null,
             Color.CornflowerBlue,
             (currentWristRads - currentPivotRads) - (90 * DEGREES_TO_RADIANS),
-            new Vector2(0.0f, 0.2f),
+            new Vector2(0.0f, 0.0f),
             SpriteEffects.None, 
             0);
 
@@ -217,6 +238,39 @@ namespace StemSolvers
             SpriteEffects.None, 
             0);
 
+            //Draws the front wall
+            spriteBatch.Draw(
+            texture,
+            new Rectangle((int)frontWallBoundX, 0, 5, Game1.screenBounds.Height),
+            null,
+            Color.White,
+            0.0f * DEGREES_TO_RADIANS,
+            new Vector2(0.0f, 0.0f),
+            SpriteEffects.None,
+            0);
+
+            //Draws the back wall
+            spriteBatch.Draw(
+            texture,
+            new Rectangle((int)backWallBoundX - 5, 0, 5, Game1.screenBounds.Height),
+            null,
+            Color.White,
+            0.0f * DEGREES_TO_RADIANS,
+            new Vector2(0.0f, 0.0f),
+            SpriteEffects.None,
+            0);
+
+            //Draws the roof
+            spriteBatch.Draw(
+            texture,
+            new Rectangle((int)0, (int)roofBoundY - 5, Game1.screenBounds.Width, 5),
+            null,
+            Color.White,
+            0.0f * DEGREES_TO_RADIANS,
+            new Vector2(0.0f, 0.0f),
+            SpriteEffects.None,
+            0);
+
             spriteBatch.End();
             spriteBatch.GraphicsDevice.SetRenderTarget(null);
             spriteBatch.Begin();
@@ -232,7 +286,7 @@ namespace StemSolvers
             if (hasCollidedWithDriveBase)
             {
                 spriteBatch.Draw((Texture2D) driveBaseRenderTarget, Game1.screenBounds, Color.Red);
-                spriteBatch.DrawString(Game1.debugFont, "Subsystems have collided with the drive base!", new Vector2((Game1.screenBounds.Width / 2) - 340, Game1.screenBounds.Height - 120), Color.Red);
+                spriteBatch.DrawString(Game1.debugFont, "Subsystems have left their allowed bounds!", new Vector2((Game1.screenBounds.Width / 2) - 340, Game1.screenBounds.Height - 120), Color.Red);
             }
             else spriteBatch.Draw((Texture2D) driveBaseRenderTarget, Game1.screenBounds, Color.CornflowerBlue);
 

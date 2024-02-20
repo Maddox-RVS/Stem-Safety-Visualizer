@@ -24,3 +24,30 @@ E:\Saves NEW PC\Logo\Programs\C# Programs\StemSolvers\obj\Debug\net6.0\StemSolve
 E:\Saves NEW PC\Logo\Programs\C# Programs\StemSolvers\obj\Debug\net6.0\StemSolvers.genruntimeconfig.cache
 E:\Saves NEW PC\Logo\Programs\C# Programs\StemSolvers\obj\Debug\net6.0\ref\StemSolvers.dll
 E:\Saves NEW PC\Logo\Programs\C# Programs\StemSolvers\bin\Debug\net6.0\Content\DebugFont.xnb
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\bin\Debug\net6.0\Content\DebugFont.xnb
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\bin\Debug\net6.0\StemSolvers.exe
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\bin\Debug\net6.0\StemSolvers.deps.json
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\bin\Debug\net6.0\StemSolvers.runtimeconfig.json
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\bin\Debug\net6.0\StemSolvers.dll
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\bin\Debug\net6.0\StemSolvers.pdb
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\bin\Debug\net6.0\MonoGame.Framework.dll
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\bin\Debug\net6.0\runtimes\linux-x64\native\libSDL2-2.0.so.0
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\bin\Debug\net6.0\runtimes\linux-x64\native\libopenal.so.1
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\bin\Debug\net6.0\runtimes\osx\native\libSDL2.dylib
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\bin\Debug\net6.0\runtimes\osx\native\libopenal.1.dylib
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\bin\Debug\net6.0\runtimes\win-x64\native\SDL2.dll
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\bin\Debug\net6.0\runtimes\win-x64\native\soft_oal.dll
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\bin\Debug\net6.0\runtimes\win-x86\native\SDL2.dll
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\bin\Debug\net6.0\runtimes\win-x86\native\soft_oal.dll
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\obj\Debug\net6.0\StemSolvers.csproj.AssemblyReference.cache
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\obj\Debug\net6.0\StemSolvers.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\obj\Debug\net6.0\StemSolvers.AssemblyInfoInputs.cache
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\obj\Debug\net6.0\StemSolvers.AssemblyInfo.cs
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\obj\Debug\net6.0\StemSolvers.csproj.CoreCompileInputs.cache
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\obj\Debug\net6.0\StemSolvers.sourcelink.json
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\obj\Debug\net6.0\StemSolv.D920607C.Up2Date
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\obj\Debug\net6.0\StemSolvers.dll
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\obj\Debug\net6.0\refint\StemSolvers.dll
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\obj\Debug\net6.0\StemSolvers.pdb
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\obj\Debug\net6.0\StemSolvers.genruntimeconfig.cache
+C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\obj\Debug\net6.0\ref\StemSolvers.dll

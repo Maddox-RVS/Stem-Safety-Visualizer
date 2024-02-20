@@ -63,13 +63,25 @@ namespace StemSolvers
                 Exit();
 
             robot.update();
-            stateTransitionHandler.update();
+            //stateTransitionHandler.update();
 
-            if (Keyboard.GetState().IsKeyDown(Keys.E)) stateTransitionHandler.transitionTo(new RoboState(-30, -30, 400));
-            else if (Keyboard.GetState().IsKeyDown(Keys.A)) stateTransitionHandler.transitionTo(new RoboState(100, 30, 200));
-            else if (Keyboard.GetState().IsKeyDown(Keys.D)) stateTransitionHandler.transitionTo(new RoboState(20, 50, 400));
-            else if (Keyboard.GetState().IsKeyDown(Keys.W)) stateTransitionHandler.transitionTo(new RoboState(0, 50, 400));
-            else if (Keyboard.GetState().IsKeyDown(Keys.S)) stateTransitionHandler.transitionTo(new RoboState(30, 90, 150));
+            if (Keyboard.GetState().IsKeyDown(Keys.E)) robot.moveToState(new RoboState(10, 160, 300));
+            else if (Keyboard.GetState().IsKeyDown(Keys.Q)) robot.moveToState(new RoboState(0, 0, 300));
+            else if (Keyboard.GetState().IsKeyDown(Keys.D1)) robot.moveToState(new RoboState(0, 90, 400));
+            else if (Keyboard.GetState().IsKeyDown(Keys.D2)) robot.moveToState(new RoboState(20, 110, 150));
+            else if (Keyboard.GetState().IsKeyDown(Keys.A)) robot.moveToState(new RoboState(120, 30, 200));
+            else if (Keyboard.GetState().IsKeyDown(Keys.D)) robot.moveToState(new RoboState(20, 50, 400));
+            else if (Keyboard.GetState().IsKeyDown(Keys.W)) robot.moveToState(new RoboState(0, 30, 400));
+            else if (Keyboard.GetState().IsKeyDown(Keys.S)) robot.moveToState(new RoboState(30, 90, 150));
+
+            //if (Keyboard.GetState().IsKeyDown(Keys.E)) stateTransitionHandler.transitionTo(new RoboState(10, 160, 300));
+            //else if (Keyboard.GetState().IsKeyDown(Keys.Q)) stateTransitionHandler.transitionTo(new RoboState(0, 0, 300));
+            //else if (Keyboard.GetState().IsKeyDown(Keys.D1)) stateTransitionHandler.transitionTo(new RoboState(0, 90, 400));
+            //else if (Keyboard.GetState().IsKeyDown(Keys.D2)) stateTransitionHandler.transitionTo(new RoboState(20, 110, 150));
+            //else if (Keyboard.GetState().IsKeyDown(Keys.A)) stateTransitionHandler.transitionTo(new RoboState(100, 30, 200));
+            //else if (Keyboard.GetState().IsKeyDown(Keys.D)) stateTransitionHandler.transitionTo(new RoboState(20, 50, 400));
+            //else if (Keyboard.GetState().IsKeyDown(Keys.W)) stateTransitionHandler.transitionTo(new RoboState(0, 50, 400));
+            //else if (Keyboard.GetState().IsKeyDown(Keys.S)) stateTransitionHandler.transitionTo(new RoboState(30, 90, 150));
 
             base.Update(gameTime);
         }
@@ -93,7 +105,7 @@ namespace StemSolvers
             spriteBatch.DrawString(debugFont, "Wrist Degrees: " + robot.getWristDegrees() % 360, new Vector2(10, 30), Color.LimeGreen);
             spriteBatch.DrawString(debugFont, "Telescope Pixel Length: " + robot.getTelescopePixels(), new Vector2(10, 50), Color.LimeGreen);
             spriteBatch.DrawString(debugFont, "Mouse Pos: " + Mouse.GetState().Position.ToString(), new Vector2(10, 70), Color.LimeGreen);
-            //stateTransitionHandler.debugDraw(spriteBatch);
+            stateTransitionHandler.debugDraw(spriteBatch);
         }
     }
 }

@@ -32,7 +32,7 @@ namespace StemSolvers
         {
             this.stemLength = robot.getTelescopePixels();
             this.pivotRadians = robot.getPivotDegrees() * DEGREES_TO_RADIANS;
-            this.wristLength = robot.getWristLength() * 0.8f;
+            this.wristLength = robot.getUmbrellaLength();
             this.wristRadians = robot.getWristDegrees() * DEGREES_TO_RADIANS;
             this.driveBaseRectangle = robot.getDriveBaseRect();
         }
@@ -52,40 +52,57 @@ namespace StemSolvers
 
         private bool isValidState(RoboState state)
         {
-            //Find the wrist end point and wrist axel point using vectors
-            Vector2 wristAxelPoint = new Vector2(
-                state.getTelescopePixels() * (float)Math.Cos(state.getPivotDegrees() * DEGREES_TO_RADIANS),
-                state.getTelescopePixels() * (float)Math.Sin(state.getPivotDegrees() * DEGREES_TO_RADIANS));
+            MechanismPoints mechPts = new MechanismPoints(state, robot);
 
-            Vector2 wristVector = new Vector2(
-                wristLength * (float)Math.Cos((state.getWristDegrees() * DEGREES_TO_RADIANS) - (state.getPivotDegrees() * DEGREES_TO_RADIANS)),
-                wristLength * -(float)Math.Sin((state.getWristDegrees() * DEGREES_TO_RADIANS) - (state.getPivotDegrees() * DEGREES_TO_RADIANS)));
+            // should be less than, but is opposite because of game world, also should be 0 for floor not whatever is here
+            if (mechPts.umbrellaBottomRightPoint.Y >= robot.floorBoundY || mechPts.umbrellaTopRightPoint.Y >= robot.floorBoundY)
+                return false;
 
-             //-----------------------------------------------
-            // temporary - because of different axis in game world vs math world
-            wristAxelPoint.X += robot.getTelescopeRect().X; 
-            wristAxelPoint.Y = -wristAxelPoint.Y;
-            wristAxelPoint.Y += robot.getTelescopeRect().Y;
-            wristVector.Y *= -1.0f;
-            //-----------------------------------------------
+            float wristDriveBaseTopIntercept = getLineIntercept(mechPts.wristAxelPoint, mechPts.umbrellaBottomRightPoint, driveBaseRectangle.Top - (driveBaseRectangle.Height / 2));
+            float wristDriveBaseBottomIntercept = getLineIntercept(mechPts.wristAxelPoint, mechPts.umbrellaBottomRightPoint, driveBaseRectangle.Bottom - (driveBaseRectangle.Height / 2));
 
-            Vector2 wristEndPoint = wristAxelPoint + wristVector;
-            
-            float wristDriveBaseTopIntercept = getLineIntercept(wristAxelPoint, wristEndPoint, driveBaseRectangle.Top - (driveBaseRectangle.Height / 2));
-            float wristDriveBaseBottomIntercept = getLineIntercept(wristAxelPoint, wristEndPoint, driveBaseRectangle.Bottom - (driveBaseRectangle.Height / 2));
+            float telescopeDriveBaseTopIntercept = getLineIntercept(new Vector2(robot.getTelescopeRect().X, robot.getTelescopeRect().Y), mechPts.wristAxelPoint, driveBaseRectangle.Top - (driveBaseRectangle.Height / 2));
+            float telescopeDriveBaseBottomIntercept = getLineIntercept(new Vector2(robot.getTelescopeRect().X, robot.getTelescopeRect().Y), mechPts.wristAxelPoint, driveBaseRectangle.Bottom - (driveBaseRectangle.Height / 2));
 
-            float telescopeDriveBaseTopIntersect = getLineIntercept(new Vector2(robot.getTelescopeRect().X, robot.getTelescopeRect().Y), wristAxelPoint, driveBaseRectangle.Top - (driveBaseRectangle.Height / 2));
-            float telescopeDriveBaseBottomIntersect = getLineIntercept(new Vector2(robot.getTelescopeRect().X, robot.getTelescopeRect().Y), wristAxelPoint, driveBaseRectangle.Bottom - (driveBaseRectangle.Height / 2));
+            // Vertical/horizontal lines don't have slope, so make them slightly not vertical/horizontal anymore :)
+            if (float.IsNaN(wristDriveBaseTopIntercept) ||
+                float.IsNaN(wristDriveBaseBottomIntercept))
+            {
+                wristDriveBaseTopIntercept = getLineIntercept(mechPts.wristAxelPoint, new Vector2(mechPts.umbrellaBottomRightPoint.X + 0.0001f, mechPts.umbrellaBottomRightPoint.Y + 0.0001f), driveBaseRectangle.Top - (driveBaseRectangle.Height / 2));
+                wristDriveBaseBottomIntercept = getLineIntercept(mechPts.wristAxelPoint, new Vector2(mechPts.umbrellaBottomRightPoint.X + 0.0001f, mechPts.umbrellaBottomRightPoint.Y + 0.0001f), driveBaseRectangle.Bottom - (driveBaseRectangle.Height / 2));
+            }
+            if (float.IsNaN(telescopeDriveBaseTopIntercept) ||
+                float.IsNaN(telescopeDriveBaseBottomIntercept))
+            {
+                telescopeDriveBaseTopIntercept = getLineIntercept(new Vector2(robot.getTelescopeRect().X + 0.0001f, robot.getTelescopeRect().Y + 0.0001f), mechPts.wristAxelPoint, driveBaseRectangle.Top - (driveBaseRectangle.Height / 2));
+                telescopeDriveBaseBottomIntercept = getLineIntercept(new Vector2(robot.getTelescopeRect().X + 0.0001f, robot.getTelescopeRect().Y + 0.0001f), mechPts.wristAxelPoint, driveBaseRectangle.Bottom - (driveBaseRectangle.Height / 2));
+            }
 
             bool topWristIntInBase = (wristDriveBaseTopIntercept <= driveBaseRectangle.Right - (driveBaseRectangle.Width / 2) && wristDriveBaseTopIntercept >= driveBaseRectangle.Left - (driveBaseRectangle.Width / 2));
             bool bottomWristIntInBase = (wristDriveBaseBottomIntercept <= driveBaseRectangle.Right - (driveBaseRectangle.Width / 2) && wristDriveBaseBottomIntercept >= driveBaseRectangle.Left - (driveBaseRectangle.Width / 2));
-            bool isWristEndPointBelowBase = wristEndPoint.Y >= driveBaseRectangle.Top - (driveBaseRectangle.Height / 2);
+            bool isWristRightPointsBelowBase = (mechPts.umbrellaBottomRightPoint.Y >= driveBaseRectangle.Top - (driveBaseRectangle.Height / 2)) || mechPts.umbrellaTopRightPoint.Y >= driveBaseRectangle.Top - (driveBaseRectangle.Height / 2);
 
-            bool topTeleIntInBase = (telescopeDriveBaseTopIntersect <= driveBaseRectangle.Right - (driveBaseRectangle.Width / 2) && telescopeDriveBaseTopIntersect >= driveBaseRectangle.Left - (driveBaseRectangle.Width / 2));
-            bool bottomTeleIntInBase = (telescopeDriveBaseBottomIntersect <= driveBaseRectangle.Right - (driveBaseRectangle.Width / 2) && telescopeDriveBaseBottomIntersect >= driveBaseRectangle.Left - (driveBaseRectangle.Width / 2));
-            bool isTeleEndPointBelowBase = wristAxelPoint.Y >= driveBaseRectangle.Top - (driveBaseRectangle.Height / 2);
+            bool topTeleIntInBase = (telescopeDriveBaseTopIntercept <= driveBaseRectangle.Right - (driveBaseRectangle.Width / 2) && telescopeDriveBaseTopIntercept >= driveBaseRectangle.Left - (driveBaseRectangle.Width / 2));
+            bool bottomTeleIntInBase = (telescopeDriveBaseBottomIntercept <= driveBaseRectangle.Right - (driveBaseRectangle.Width / 2) && telescopeDriveBaseBottomIntercept >= driveBaseRectangle.Left - (driveBaseRectangle.Width / 2));
+            bool isTeleEndPointBelowBase = mechPts.wristAxelPoint.Y >= driveBaseRectangle.Top - (driveBaseRectangle.Height / 2);
 
-            if ((isWristEndPointBelowBase && (topWristIntInBase || bottomWristIntInBase)) || (isTeleEndPointBelowBase && (topTeleIntInBase || bottomTeleIntInBase)))
+            if ((isWristRightPointsBelowBase && (topWristIntInBase || bottomWristIntInBase)) || 
+                (isTeleEndPointBelowBase && (topTeleIntInBase || bottomTeleIntInBase)) ||
+                mechPts.wristAxelPoint.X >= robot.frontWallBoundX ||
+                mechPts.umbrellaBottomLeftPoint.X >= robot.frontWallBoundX ||
+                mechPts.umbrellaBottomRightPoint.X >= robot.frontWallBoundX ||
+                mechPts.umbrellaTopLeftPoint.X >= robot.frontWallBoundX ||
+                mechPts.umbrellaTopRightPoint.X >= robot.frontWallBoundX ||
+                mechPts.wristAxelPoint.X <= robot.backWallBoundX ||
+                mechPts.umbrellaBottomLeftPoint.X <= robot.backWallBoundX ||
+                mechPts.umbrellaBottomRightPoint.X <= robot.backWallBoundX ||
+                mechPts.umbrellaTopLeftPoint.X <= robot.backWallBoundX ||
+                mechPts.umbrellaTopRightPoint.X <= robot.backWallBoundX ||
+                mechPts.wristAxelPoint.Y <= robot.roofBoundY ||
+                mechPts.umbrellaBottomLeftPoint.Y <= robot.roofBoundY ||
+                mechPts.umbrellaBottomRightPoint.Y <= robot.roofBoundY ||
+                mechPts.umbrellaTopLeftPoint.Y <= robot.roofBoundY ||
+                mechPts.umbrellaTopRightPoint.Y <= robot.roofBoundY) // all the y values should be checked with >= but are opposite because of game world axis
                 return false;
 
             return true;
@@ -128,23 +145,9 @@ namespace StemSolvers
 
                 Vector2 wristEndPoint = wristAxelVector + wristVector;
 
-                Debug.WriteLine(wristEndPoint.Y);
-                Debug.WriteLine(robot.getDriveBaseRect().Top - (robot.getDriveBaseRect().Height / 2));
-
                 float difference = Math.Abs(wristEndPoint.Y - (robot.getDriveBaseRect().Top - (robot.getDriveBaseRect().Height / 2)));
-
-                Debug.WriteLine(difference);
-                Debug.WriteLine(robot.getTelescopePixels());
-                Debug.WriteLine(Math.Sin(targetState.getPivotDegrees()));
-
                 float opposite = (robot.getTelescopePixels() * (float) Math.Sin(invalidState.getPivotDegrees() * DEGREES_TO_RADIANS)) + difference;
-
-                Debug.WriteLine(opposite);
-                Debug.WriteLine(robot.getTelescopePixels());
-
                 midStatePivotDegrees = (float) (Math.Asin(opposite / robot.getTelescopePixels())) * RADIANS_TO_DEGREES;
-
-                Debug.WriteLine(midStatePivotDegrees + "\n");
             }
 
             RoboState midState = new RoboState(midStatePivotDegrees, midStateWristDegrees, midStateTelescopePixels);
@@ -154,33 +157,13 @@ namespace StemSolvers
 
         public void debugDraw(SpriteBatch spriteBatch)
         {
-            Vector2 wristAxelVector = new Vector2(
-                stemLength * (float)Math.Cos(pivotRadians),
-                stemLength * (float)Math.Sin(pivotRadians));
+            MechanismPoints mechPts = new MechanismPoints(new RoboState(robot.getPivotDegrees(), robot.getWristDegrees(), robot.getTelescopePixels()), robot);
 
-            //-----------------------------------------------
-            // temporary
-            wristAxelVector.X += robot.getTelescopeRect().X; 
-            wristAxelVector.Y = -wristAxelVector.Y;
-            wristAxelVector.Y += robot.getTelescopeRect().Y;
-            //-----------------------------------------------
+            float wristDriveBaseTopIntercept = getLineIntercept(mechPts.wristAxelPoint, mechPts.umbrellaBottomRightPoint, driveBaseRectangle.Top - (driveBaseRectangle.Height / 2));
+            float wristDriveBaseBottomIntercept = getLineIntercept(mechPts.wristAxelPoint, mechPts.umbrellaBottomRightPoint, driveBaseRectangle.Bottom - (driveBaseRectangle.Height / 2)); 
 
-            Vector2 wristVector = new Vector2(
-                wristLength * (float)Math.Cos(wristRadians - pivotRadians),
-                wristLength * -(float)Math.Sin(wristRadians - pivotRadians));
-
-            //-----------------------------------------------
-            // temporary
-            wristVector.Y *= -1.0f;
-            //-----------------------------------------------
-
-            Vector2 wristEndPoint = wristAxelVector + wristVector;
-            
-            float wristDriveBaseTopIntercept = getLineIntercept(wristAxelVector, wristEndPoint, driveBaseRectangle.Top - (driveBaseRectangle.Height / 2));
-            float wristDriveBaseBottomIntercept = getLineIntercept(wristAxelVector, wristEndPoint, driveBaseRectangle.Bottom - (driveBaseRectangle.Height / 2)); 
-
-            float telescopeDriveBaseTopIntersect = getLineIntercept(new Vector2(robot.getTelescopeRect().X, robot.getTelescopeRect().Y), wristAxelVector, driveBaseRectangle.Top - (driveBaseRectangle.Height / 2));
-            float telescopeDriveBaseBottomIntersect = getLineIntercept(new Vector2(robot.getTelescopeRect().X, robot.getTelescopeRect().Y), wristAxelVector, driveBaseRectangle.Bottom - (driveBaseRectangle.Height / 2));
+            float telescopeDriveBaseTopIntersect = getLineIntercept(new Vector2(robot.getTelescopeRect().X, robot.getTelescopeRect().Y), mechPts.wristAxelPoint, driveBaseRectangle.Top - (driveBaseRectangle.Height / 2));
+            float telescopeDriveBaseBottomIntersect = getLineIntercept(new Vector2(robot.getTelescopeRect().X, robot.getTelescopeRect().Y), mechPts.wristAxelPoint, driveBaseRectangle.Bottom - (driveBaseRectangle.Height / 2));
 
             //------------------------------------------------------------------------------------------------------------------//
 
@@ -193,24 +176,17 @@ namespace StemSolvers
             Vector2 topTelePos = new Vector2(telescopeDriveBaseTopIntersect, driveBaseRectangle.Top - (driveBaseRectangle.Height / 2));
             Vector2 bottomTelePos = new Vector2(telescopeDriveBaseBottomIntersect,driveBaseRectangle.Bottom - (driveBaseRectangle.Height / 2));
 
-            spriteBatch.Draw(texture, new Rectangle((int) wristAxelVector.X, (int) wristAxelVector.Y, 5, 5), Color.OrangeRed);
-            spriteBatch.Draw(texture, new Rectangle((int) wristEndPoint.X, (int) wristEndPoint.Y, 5, 5), Color.OrangeRed);
-            spriteBatch.Draw(texture, new Rectangle((int) robot.getTelescopeRect().X, robot.getTelescopeRect().Y, 5, 5), Color.OrangeRed);
+            spriteBatch.Draw(texture, new Rectangle((int)mechPts.wristAxelPoint.X, (int)mechPts.wristAxelPoint.Y, 5, 5), Color.OrangeRed);
+            spriteBatch.Draw(texture, new Rectangle((int)mechPts.umbrellaBottomRightPoint.X, (int)mechPts.umbrellaBottomRightPoint.Y, 5, 5), Color.OrangeRed);
+            spriteBatch.Draw(texture, new Rectangle((int)mechPts.umbrellaTopRightPoint.X, (int)mechPts.umbrellaTopRightPoint.Y, 5, 5), Color.OrangeRed);
+            spriteBatch.Draw(texture, new Rectangle((int)mechPts.umbrellaTopLeftPoint.X, (int)mechPts.umbrellaTopLeftPoint.Y, 5, 5), Color.OrangeRed);
+            spriteBatch.Draw(texture, new Rectangle((int)mechPts.umbrellaBottomLeftPoint.X, (int)mechPts.umbrellaBottomLeftPoint.Y, 5, 5), Color.OrangeRed);
 
             spriteBatch.Draw(texture, new Rectangle((int)topWristPos.X - 2, (int)topWristPos.Y - 2, 5, 5), Color.Black);
             spriteBatch.Draw(texture, new Rectangle((int)bottomWristPos.X - 2, (int)bottomWristPos.Y - 5, 5, 5), Color.Black);
 
             spriteBatch.Draw(texture, new Rectangle((int) topTelePos.X - 2, (int) topTelePos.Y - 2, 5, 5), Color.Black);
             spriteBatch.Draw(texture, new Rectangle((int) bottomTelePos.X - 2, (int) bottomTelePos.Y - 5, 5, 5), Color.Black);
-
-            spriteBatch.DrawString(Game1.debugFont, "wristAxelVector: " + wristAxelVector.ToString(), new Vector2(10, 90), Color.LimeGreen);
-            spriteBatch.DrawString(Game1.debugFont, "wristVector: " + wristVector.ToString(), new Vector2(10, 110), Color.LimeGreen);
-            spriteBatch.DrawString(Game1.debugFont, "wristEndPoint: " + wristEndPoint.ToString(), new Vector2(10, 130), Color.LimeGreen);
-
-            spriteBatch.DrawString(Game1.debugFont, "Top: " + (driveBaseRectangle.Top - (driveBaseRectangle.Height / 2)).ToString(), new Vector2(10, 150), Color.LimeGreen);
-            spriteBatch.DrawString(Game1.debugFont, "Bottom: " + (driveBaseRectangle.Bottom - (driveBaseRectangle.Height / 2)).ToString(), new Vector2(10, 170), Color.LimeGreen);
-            spriteBatch.DrawString(Game1.debugFont, "Right: " + (driveBaseRectangle.Right - (driveBaseRectangle.Width / 2)).ToString(), new Vector2(10, 190), Color.LimeGreen);
-            spriteBatch.DrawString(Game1.debugFont, "Left: " + (driveBaseRectangle.Left - (driveBaseRectangle.Width / 2)).ToString(), new Vector2(10, 210), Color.LimeGreen);
 
             spriteBatch.DrawString(Game1.debugFont, "State Valid: " + isValidState(new RoboState(robot.getPivotDegrees(), robot.getWristDegrees(), robot.getTelescopePixels())).ToString(), new Vector2(10, 230), Color.LimeGreen);
 
