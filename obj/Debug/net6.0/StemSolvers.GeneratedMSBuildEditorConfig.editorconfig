@@ -8,6 +8,4 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = StemSolvers
-build_property.ProjectDir = C:\Users\Babbage\Desktop\Programs\C# Workspace\Stem-Safety-Visualizer\
-build_property.EnableComHosting = 
-build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.ProjectDir = E:\Saves NEW PC\Logo\Programs\C# Programs\StemSolvers\

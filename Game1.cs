@@ -17,6 +17,7 @@ namespace StemSolvers
         private SpriteBatch spriteBatch;
         private Robot robot;
         private StateTransitionHandler stateTransitionHandler;
+        private Random rnd = new Random();
 
         public Game1()
         {
@@ -49,9 +50,9 @@ namespace StemSolvers
             robot = new Robot(
                 texture,
                 new Vector2((screenBounds.Width / 2) - 100, screenBounds.Height - 25),
-                2.0f,
-                3.0f,
-                5.0f,
+                20.0f,
+                30.0f,
+                50.0f,
                 GraphicsDevice);
 
             stateTransitionHandler = new StateTransitionHandler(robot);
@@ -63,25 +64,14 @@ namespace StemSolvers
                 Exit();
 
             robot.update();
-            //stateTransitionHandler.update();
+            stateTransitionHandler.update();
 
-            if (Keyboard.GetState().IsKeyDown(Keys.E)) robot.moveToState(new RoboState(10, 160, 300));
-            else if (Keyboard.GetState().IsKeyDown(Keys.Q)) robot.moveToState(new RoboState(0, 0, 300));
-            else if (Keyboard.GetState().IsKeyDown(Keys.D1)) robot.moveToState(new RoboState(0, 90, 400));
-            else if (Keyboard.GetState().IsKeyDown(Keys.D2)) robot.moveToState(new RoboState(20, 110, 150));
-            else if (Keyboard.GetState().IsKeyDown(Keys.A)) robot.moveToState(new RoboState(120, 30, 200));
-            else if (Keyboard.GetState().IsKeyDown(Keys.D)) robot.moveToState(new RoboState(20, 50, 400));
-            else if (Keyboard.GetState().IsKeyDown(Keys.W)) robot.moveToState(new RoboState(0, 30, 400));
-            else if (Keyboard.GetState().IsKeyDown(Keys.S)) robot.moveToState(new RoboState(30, 90, 150));
+            if (robot.hasReachedTarget() && Keyboard.GetState().IsKeyDown(Keys.Down))
+                stateTransitionHandler.transitionTo(new RoboState(rnd.Next(1, 361), rnd.Next(0, 181), rnd.Next(50, 401)));
 
-            //if (Keyboard.GetState().IsKeyDown(Keys.E)) stateTransitionHandler.transitionTo(new RoboState(10, 160, 300));
-            //else if (Keyboard.GetState().IsKeyDown(Keys.Q)) stateTransitionHandler.transitionTo(new RoboState(0, 0, 300));
-            //else if (Keyboard.GetState().IsKeyDown(Keys.D1)) stateTransitionHandler.transitionTo(new RoboState(0, 90, 400));
-            //else if (Keyboard.GetState().IsKeyDown(Keys.D2)) stateTransitionHandler.transitionTo(new RoboState(20, 110, 150));
-            //else if (Keyboard.GetState().IsKeyDown(Keys.A)) stateTransitionHandler.transitionTo(new RoboState(100, 30, 200));
-            //else if (Keyboard.GetState().IsKeyDown(Keys.D)) stateTransitionHandler.transitionTo(new RoboState(20, 50, 400));
-            //else if (Keyboard.GetState().IsKeyDown(Keys.W)) stateTransitionHandler.transitionTo(new RoboState(0, 50, 400));
-            //else if (Keyboard.GetState().IsKeyDown(Keys.S)) stateTransitionHandler.transitionTo(new RoboState(30, 90, 150));
+            //if (Keyboard.GetState().IsKeyDown(Keys.E)) robot.moveToState(new RoboState(124, 149, 59));
+            if (Keyboard.GetState().IsKeyDown(Keys.E)) stateTransitionHandler.transitionTo(new RoboState(124, 149, 59));
+            else if (Keyboard.GetState().IsKeyDown(Keys.D)) stateTransitionHandler.transitionTo(new RoboState(20, 0, 420));
 
             base.Update(gameTime);
         }

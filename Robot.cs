@@ -22,7 +22,8 @@ namespace StemSolvers
         private float wristOffsetLength;
         private Texture2D texture;
         private Vector2 roboPos;
-        public float backWallBoundX, frontWallBoundX, roofBoundY, floorBoundY;
+        private Rectangle allowedBounds; 
+        private float backWallBoundX, frontWallBoundX, roofBoundY, floorBoundY;
 
         public Robot(Texture2D texture, Vector2 position, float pivotSpeedDegsPerSec, float wristSpeedDegsPerSec, float telescopePixelSpeed, GraphicsDevice graphicsDevice)
         {
@@ -37,10 +38,11 @@ namespace StemSolvers
             frontWallBoundX = 650.0f;
             roofBoundY = 150.0f;
             floorBoundY = Game1.screenBounds.Height; // should be 0 in real life
+            allowedBounds = new Rectangle((int) backWallBoundX, (int) roofBoundY, (int) Math.Abs(backWallBoundX - frontWallBoundX), (int) Math.Abs(roofBoundY - floorBoundY));
 
             targetPivotRads = 0.0f * DEGREES_TO_RADIANS;
-            targetWristRads = 50.0f * DEGREES_TO_RADIANS;
-            targetTelescopePixels = 400.0f;
+            targetWristRads = 40.0f * DEGREES_TO_RADIANS;
+            targetTelescopePixels = 380.0f;
 
             currentPivotRads = targetPivotRads;
             currentWristRads = targetWristRads;
@@ -139,6 +141,11 @@ namespace StemSolvers
         public Rectangle getTelescopeRect()
         {
             return new Rectangle((int) roboPos.X - 200 + 50, (int) roboPos.Y - 35, (int) currentTelescopePixels, 20);
+        }
+
+        public Rectangle getAllowedBounds()
+        {
+            return allowedBounds;
         }
 
         public static bool calculatePixelCollision(SpriteBatch spriteBatch, Texture2D texture1, Rectangle rectangle1, Texture2D texture2, Rectangle rectangle2)
@@ -241,7 +248,7 @@ namespace StemSolvers
             //Draws the front wall
             spriteBatch.Draw(
             texture,
-            new Rectangle((int)frontWallBoundX, 0, 5, Game1.screenBounds.Height),
+            new Rectangle((int)allowedBounds.Right, 0, 5, Game1.screenBounds.Height),
             null,
             Color.White,
             0.0f * DEGREES_TO_RADIANS,
@@ -252,7 +259,7 @@ namespace StemSolvers
             //Draws the back wall
             spriteBatch.Draw(
             texture,
-            new Rectangle((int)backWallBoundX - 5, 0, 5, Game1.screenBounds.Height),
+            new Rectangle((int)allowedBounds.Left - 5, 0, 5, Game1.screenBounds.Height),
             null,
             Color.White,
             0.0f * DEGREES_TO_RADIANS,
@@ -263,7 +270,7 @@ namespace StemSolvers
             //Draws the roof
             spriteBatch.Draw(
             texture,
-            new Rectangle((int)0, (int)roofBoundY - 5, Game1.screenBounds.Width, 5),
+            new Rectangle((int)0, (int)allowedBounds.Top - 5, Game1.screenBounds.Width, 5),
             null,
             Color.White,
             0.0f * DEGREES_TO_RADIANS,

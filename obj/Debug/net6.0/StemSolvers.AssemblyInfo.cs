@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("StemSolvers")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9e41958f2c61d1a9da26c04519c311b7514ef7f6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
 [assembly: System.Reflection.AssemblyProductAttribute("StemSolvers")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StemSolvers")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

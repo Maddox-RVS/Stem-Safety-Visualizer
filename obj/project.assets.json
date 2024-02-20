@@ -102,23 +102,25 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Babbage\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\rynvn\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Babbage\\Desktop\\Programs\\C# Workspace\\Stem-Safety-Visualizer\\StemSolvers.csproj",
+      "projectUniqueName": "E:\\Saves NEW PC\\Logo\\Programs\\C# Programs\\StemSolvers\\StemSolvers.csproj",
       "projectName": "StemSolvers",
-      "projectPath": "C:\\Users\\Babbage\\Desktop\\Programs\\C# Workspace\\Stem-Safety-Visualizer\\StemSolvers.csproj",
-      "packagesPath": "C:\\Users\\Babbage\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Babbage\\Desktop\\Programs\\C# Workspace\\Stem-Safety-Visualizer\\obj\\",
+      "projectPath": "E:\\Saves NEW PC\\Logo\\Programs\\C# Programs\\StemSolvers\\StemSolvers.csproj",
+      "packagesPath": "C:\\Users\\rynvn\\.nuget\\packages\\",
+      "outputPath": "E:\\Saves NEW PC\\Logo\\Programs\\C# Programs\\StemSolvers\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\Babbage\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\rynvn\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -140,11 +142,6 @@
         "warnAsError": [
           "NU1605"
         ]
-      },
-      "restoreAuditProperties": {
-        "enableAudit": "true",
-        "auditLevel": "low",
-        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -174,19 +171,19 @@
         "downloadDependencies": [
           {
             "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[6.0.27, 6.0.27]"
+            "version": "[6.0.20, 6.0.20]"
           },
           {
             "name": "Microsoft.NETCore.App.Host.win-x64",
-            "version": "[6.0.27, 6.0.27]"
+            "version": "[6.0.20, 6.0.20]"
           },
           {
             "name": "Microsoft.NETCore.App.Ref",
-            "version": "[6.0.27, 6.0.27]"
+            "version": "[6.0.20, 6.0.20]"
           },
           {
             "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[6.0.27, 6.0.27]"
+            "version": "[6.0.20, 6.0.20]"
           }
         ],
         "frameworkReferences": {
@@ -194,7 +191,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.200\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
       }
     }
   }
