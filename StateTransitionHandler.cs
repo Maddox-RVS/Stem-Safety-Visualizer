@@ -72,13 +72,15 @@ namespace StemSolvers
             float telescopeDriveBaseTopIntercept = getLineIntercept(new Vector2(robot.getTelescopeRect().X + 0.0001f, robot.getTelescopeRect().Y + 0.0001f), mechPts.wristAxelPoint, driveBaseRectangle.Top - (driveBaseRectangle.Height / 2));
             float telescopeDriveBaseBottomIntercept = getLineIntercept(new Vector2(robot.getTelescopeRect().X + 0.0001f, robot.getTelescopeRect().Y + 0.0001f), mechPts.wristAxelPoint, driveBaseRectangle.Bottom - (driveBaseRectangle.Height / 2));
 
+            //FLIP BOTTOM AND TOP BECAUSE OF GAME WORLD
+
             bool topWristIntInBase = (wristDriveBaseTopIntercept <= driveBaseRectangle.Right - (driveBaseRectangle.Width / 2) && wristDriveBaseTopIntercept >= driveBaseRectangle.Left - (driveBaseRectangle.Width / 2));
             bool bottomWristIntInBase = (wristDriveBaseBottomIntercept <= driveBaseRectangle.Right - (driveBaseRectangle.Width / 2) && wristDriveBaseBottomIntercept >= driveBaseRectangle.Left - (driveBaseRectangle.Width / 2));
-            bool isWristRightPointsBelowBase = (mechPts.umbrellaBottomRightPoint.Y <= driveBaseRectangle.Top - (driveBaseRectangle.Height / 2)) || mechPts.umbrellaTopRightPoint.Y <= driveBaseRectangle.Top - (driveBaseRectangle.Height / 2);
+            bool isWristRightPointsBelowBase = (mechPts.umbrellaBottomRightPoint.Y <= driveBaseRectangle.Bottom - (driveBaseRectangle.Height / 2)) || mechPts.umbrellaTopRightPoint.Y <= driveBaseRectangle.Bottom - (driveBaseRectangle.Height / 2);
 
             bool topTeleIntInBase = (telescopeDriveBaseTopIntercept <= driveBaseRectangle.Right - (driveBaseRectangle.Width / 2) && telescopeDriveBaseTopIntercept >= driveBaseRectangle.Left - (driveBaseRectangle.Width / 2));
             bool bottomTeleIntInBase = (telescopeDriveBaseBottomIntercept <= driveBaseRectangle.Right - (driveBaseRectangle.Width / 2) && telescopeDriveBaseBottomIntercept >= driveBaseRectangle.Left - (driveBaseRectangle.Width / 2));
-            bool isTeleEndPointBelowBase = mechPts.wristAxelPoint.Y <= driveBaseRectangle.Top - (driveBaseRectangle.Height / 2);
+            bool isTeleEndPointBelowBase = mechPts.wristAxelPoint.Y <= driveBaseRectangle.Bottom - (driveBaseRectangle.Height / 2);
 
             if (((isWristRightPointsBelowBase && (topWristIntInBase || bottomWristIntInBase)) || 
                 (isTeleEndPointBelowBase && (topTeleIntInBase || bottomTeleIntInBase))) &&
@@ -101,14 +103,6 @@ namespace StemSolvers
             return InvalidationReasons.NONE;
         }
 
-
-        private Boolean isSmallestValue(float value, params float[] values)
-        {
-            foreach (float val in values)
-                if (value >= val) return false;
-            return true;
-        }
-
         private RoboState stepTowardsTargetState()
         {
             RoboState currentState = new RoboState(robot.getPivotDegrees(), robot.getWristDegrees(), robot.getTelescopePixels());
@@ -124,44 +118,35 @@ namespace StemSolvers
             if (pivotMovementValid != InvalidationReasons.NONE)
             {
                 RoboState invalidState = new RoboState(targetState.getPivotDegrees(), robot.getWristDegrees(), robot.getTelescopePixels());
-                Debug.WriteLine("pivotMovementValid: " + pivotMovementValid.ToString());
-                Debug.WriteLine("currentState: { Pivot Deg: " + currentState.getPivotDegrees() + ", Wrist Deg: " + currentState.getWristDegrees() + ", TelescopePixels: " + currentState.getTelescopePixels());
-                Debug.WriteLine("invalidState: { Pivot Deg: " + invalidState.getPivotDegrees() + ", Wrist Deg: " + invalidState.getWristDegrees() + ", TelescopePixels: " + invalidState.getTelescopePixels());
+                
                 MechanismPoints mechPts = new MechanismPoints(invalidState, robot);
                 Rectangle umbrellaRect = mechPts.getCastedRect();
 
                 if (pivotMovementValid == InvalidationReasons.DRIVE_BASE || pivotMovementValid == InvalidationReasons.DRIVE_BASE_AND_WALLS)
                 {
-                    float lowestYofUmbrellaPoints = Math.Max(mechPts.umbrellaBottomRightPoint.Y, mechPts.umbrellaTopRightPoint.Y); // should be math.min but is opposite bc of game world
-                    float difference = Math.Abs(lowestYofUmbrellaPoints - (robot.getDriveBaseRect().Top - (robot.getDriveBaseRect().Height / 2)));
+                    float lowestOfUmbrellaPoints = Math.Min(mechPts.umbrellaBottomRightPoint.Y, mechPts.umbrellaTopRightPoint.Y); // should be math.min but is opposite bc of game world
+                    float difference = Math.Abs(lowestOfUmbrellaPoints - (robot.getDriveBaseRect().Bottom - (robot.getDriveBaseRect().Height / 2))); // shout be rect top but flipped ciz game world
                     float opposite = (robot.getTelescopePixels() * (float)Math.Sin(invalidState.getPivotDegrees() * DEGREES_TO_RADIANS)) + difference;
                     midStatePivotDegrees = (float)(Math.Asin(opposite / robot.getTelescopePixels())) * RADIANS_TO_DEGREES;
                 }
                 else if (pivotMovementValid == InvalidationReasons.WALLS)
                 {
+                    //ALL TOPS AND BOTTOMS ARE REVERSED CUZ GAME WORLD
+
                     float leftDiff = umbrellaRect.Left < robot.getAllowedBounds().Left ? Math.Abs(umbrellaRect.Left - robot.getAllowedBounds().Left) : 0;
                     float rightDiff = umbrellaRect.Right > robot.getAllowedBounds().Right ? Math.Abs(umbrellaRect.Right - robot.getAllowedBounds().Right) : 0;
-                    float topDiff = umbrellaRect.Top < robot.getAllowedBounds().Top ? Math.Abs(umbrellaRect.Top - robot.getAllowedBounds().Top) : 0; // should be greater than, but opposite cuz game world
-                    float bottomDiff = umbrellaRect.Bottom > robot.getAllowedBounds().Bottom ? Math.Abs(umbrellaRect.Bottom - robot.getAllowedBounds().Bottom) : 0; // should be less than, but opposite cuz game world
+                    float topDiff = umbrellaRect.Bottom > robot.getAllowedBounds().Bottom ? Math.Abs(umbrellaRect.Bottom - robot.getAllowedBounds().Bottom) : 0; // should be greater than, but opposite cuz game world
+                    float bottomDiff = umbrellaRect.Top < robot.getAllowedBounds().Top ? Math.Abs(umbrellaRect.Top - robot.getAllowedBounds().Top) : 0; // should be less than, but opposite cuz game world
 
                     Vector2 midWristAxelPoint = mechPts.wristAxelPoint;
                     midWristAxelPoint.X += leftDiff;
                     midWristAxelPoint.X -= rightDiff;
-                    midWristAxelPoint.Y += topDiff; // should subtract to move down when in real world, but is opposite cuz game world
-                    midWristAxelPoint.Y -= bottomDiff; // should add to move up when in real world, but is opposite cuz game world
+                    midWristAxelPoint.Y -= topDiff; // should subtract to move down when in real world, but is opposite cuz game world
+                    midWristAxelPoint.Y += bottomDiff; // should add to move up when in real world, but is opposite cuz game world
 
-                    Debug.WriteLine("wristAxelPoint: " + mechPts.wristAxelPoint.ToString());
-                    Debug.WriteLine("UmbrellaRect: " + umbrellaRect.ToString());
-                    Debug.WriteLine("AllowedBounds: " + robot.getAllowedBounds().ToString());
-
-                    Vector2 pivotAxelToWristAxelSlope = new Vector2(midWristAxelPoint.X - robot.getTelescopeRect().X, robot.getTelescopeRect().Y - midWristAxelPoint.Y); // invert x2 and x1 since game world is opposite | slope formula you get it its 4am AHHHHH
+                    Vector2 pivotAxelToWristAxelSlope = new Vector2(midWristAxelPoint.X - robot.getTelescopeRect().X, midWristAxelPoint.Y - robot.getTelescopeRect().Y); // invert x2 and x1 since game world is opposite | slope formula you get it its 4am AHHHHH
                     midStateTelescopePixels = (float) Math.Sqrt(Math.Pow(pivotAxelToWristAxelSlope.X, 2) + Math.Pow(pivotAxelToWristAxelSlope.Y, 2));
                     midStatePivotDegrees = (float)(Math.Asin(pivotAxelToWristAxelSlope.Y / midStateTelescopePixels)) * RADIANS_TO_DEGREES;
-
-                    Debug.WriteLine("midWristAxelPoint: " + midWristAxelPoint.ToString());
-                    Debug.WriteLine("Current TelescopeRect: " + robot.getTelescopeRect().ToString());
-                    Debug.WriteLine("pivotAxelToWristAxelSlope: " + pivotAxelToWristAxelSlope.ToString());              
-                    Debug.WriteLine("midStateTelescopePixels: " + midStateTelescopePixels);
                 }
             }
 

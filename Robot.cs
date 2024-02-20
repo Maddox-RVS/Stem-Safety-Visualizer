@@ -37,8 +37,8 @@ namespace StemSolvers
             backWallBoundX = 40.0f;
             frontWallBoundX = 650.0f;
             roofBoundY = 350.0f;
-            floorBoundY = Game1.screenBounds.Height; // should be 0 in real life
-            allowedBounds = new Rectangle((int) backWallBoundX, (int) roofBoundY, (int) Math.Abs(backWallBoundX - frontWallBoundX), (int) Math.Abs(roofBoundY - floorBoundY));
+            floorBoundY = 0; 
+            allowedBounds = new Rectangle((int) backWallBoundX, (int) floorBoundY, (int) Math.Abs(backWallBoundX - frontWallBoundX), (int) Math.Abs(roofBoundY - floorBoundY));
 
             targetPivotRads = 0.0f * DEGREES_TO_RADIANS;
             targetWristRads = 40.0f * DEGREES_TO_RADIANS;
@@ -91,7 +91,7 @@ namespace StemSolvers
         }
         public float getWristDegrees()
         {
-            return 90 - (currentWristRads * RADIANS_TO_DEGREES);
+            return (currentWristRads * RADIANS_TO_DEGREES);
         }
         public void setTelescopePixels(float pixels)
         {
@@ -200,7 +200,7 @@ namespace StemSolvers
             new Rectangle((int) (mechPtsCurrent.umbrellaBottomLeftPoint.X), (int) (mechPtsCurrent.umbrellaBottomLeftPoint.Y), (int) wristHeight, (int) wristLength),
             null,
             Color.CornflowerBlue,
-            (currentWristRads + currentPivotRads),
+            (180 - (180 - (180 - (currentWristRads * RADIANS_TO_DEGREES)) - (currentPivotRads * RADIANS_TO_DEGREES)) - 90) * DEGREES_TO_RADIANS,
             new Vector2(0.0f, 1.0f),
             SpriteEffects.None, 
             0);
@@ -246,7 +246,7 @@ namespace StemSolvers
             //Draws the roof
             spriteBatch.Draw(
             texture,
-            new Rectangle((int)0, (int)allowedBounds.Top - 5, Game1.screenBounds.Width, 5),
+            new Rectangle((int)0, (int)allowedBounds.Bottom - 5, Game1.screenBounds.Width, 5),
             null,
             Color.White,
             0.0f * DEGREES_TO_RADIANS,
@@ -259,6 +259,8 @@ namespace StemSolvers
             spriteBatch.GraphicsDevice.Clear(Color.White);
             spriteBatch.Begin();
 
+            MechanismPoints mechPtsTarget = new MechanismPoints(new RoboState(targetPivotRads * RADIANS_TO_DEGREES, targetWristRads * RADIANS_TO_DEGREES, targetTelescopePixels), this);
+            
             //Draws the target telescope at the pivot degrees
             spriteBatch.Draw(
             texture,
@@ -270,17 +272,15 @@ namespace StemSolvers
             SpriteEffects.None, 
             0);
 
-            MechanismPoints mechPtsTarget = new MechanismPoints(new RoboState(targetPivotRads * RADIANS_TO_DEGREES, targetWristRads * RADIANS_TO_DEGREES, targetTelescopePixels), this);
-
             //Draws the target wrist at the wrist degrees
             spriteBatch.Draw(
             texture,
-            new Rectangle((int) (mechPtsCurrent.umbrellaBottomLeftPoint.X), (int) (mechPtsCurrent.umbrellaBottomLeftPoint.Y), (int) wristHeight, (int) wristLength),
+            new Rectangle((int)(mechPtsTarget.umbrellaBottomLeftPoint.X), (int)(mechPtsTarget.umbrellaBottomLeftPoint.Y), (int)wristHeight, (int)wristLength),
             null,
             Color.LightGray,
-            (currentWristRads + currentPivotRads),
+            (180 - (180 - (180 - (targetWristRads * RADIANS_TO_DEGREES)) - (targetPivotRads * RADIANS_TO_DEGREES)) - 90) * DEGREES_TO_RADIANS,
             new Vector2(0.0f, 1.0f),
-            SpriteEffects.None, 
+            SpriteEffects.None,
             0);
 
             hasCollidedWithDriveBase = calculatePixelCollision(
@@ -294,7 +294,6 @@ namespace StemSolvers
             if (hasCollidedWithDriveBase)
             {
                 spriteBatch.Draw((Texture2D) driveBaseRenderTarget, Game1.screenBounds, Color.Red);
-                spriteBatch.DrawString(Game1.debugFont, "Subsystems have left their allowed bounds!", new Vector2((Game1.screenBounds.Width / 2) - 340, Game1.screenBounds.Height - 120), Color.Red);
             }
             else spriteBatch.Draw((Texture2D) driveBaseRenderTarget, Game1.screenBounds, Color.CornflowerBlue);
 
