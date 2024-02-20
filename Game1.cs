@@ -18,6 +18,7 @@ namespace StemSolvers
         private Robot robot;
         private StateTransitionHandler stateTransitionHandler;
         private Random rnd = new Random();
+        public static RenderTarget2D viewPort;
 
         public Game1()
         {
@@ -35,6 +36,13 @@ namespace StemSolvers
         protected override void Initialize()
         {
             screenBounds = new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+            viewPort = new RenderTarget2D(
+                GraphicsDevice,
+                Game1.screenBounds.Width,
+                Game1.screenBounds.Height,
+                false,
+                GraphicsDevice.PresentationParameters.BackBufferFormat,
+                GraphicsDevice.PresentationParameters.DepthStencilFormat);
 
             base.Initialize();
         }
@@ -49,10 +57,10 @@ namespace StemSolvers
 
             robot = new Robot(
                 texture,
-                new Vector2((screenBounds.Width / 2) - 100, screenBounds.Height - 25),
-                20.0f,
-                30.0f,
-                50.0f,
+                new Vector2((screenBounds.Width / 2) - 100, 25),
+                2.0f,
+                3.0f,
+                5.0f,
                 GraphicsDevice);
 
             stateTransitionHandler = new StateTransitionHandler(robot);
@@ -64,26 +72,48 @@ namespace StemSolvers
                 Exit();
 
             robot.update();
-            stateTransitionHandler.update();
+            //stateTransitionHandler.update();
 
-            if (robot.hasReachedTarget() && Keyboard.GetState().IsKeyDown(Keys.Down))
-                stateTransitionHandler.transitionTo(new RoboState(rnd.Next(1, 361), rnd.Next(0, 181), rnd.Next(50, 401)));
+            //if (robot.hasReachedTarget() && Keyboard.GetState().IsKeyDown(Keys.Down))
+            //    stateTransitionHandler.transitionTo(new RoboState(rnd.Next(1, 361), rnd.Next(0, 181), rnd.Next(50, 401)));
 
-            //if (Keyboard.GetState().IsKeyDown(Keys.E)) robot.moveToState(new RoboState(124, 149, 59));
-            if (Keyboard.GetState().IsKeyDown(Keys.E)) stateTransitionHandler.transitionTo(new RoboState(124, 149, 59));
-            else if (Keyboard.GetState().IsKeyDown(Keys.D)) stateTransitionHandler.transitionTo(new RoboState(20, 0, 420));
+            if (Keyboard.GetState().IsKeyDown(Keys.E)) robot.moveToState(new RoboState(10, 0, 300));
+            if (Keyboard.GetState().IsKeyDown(Keys.A)) robot.moveToState(new RoboState(0, 90, 300));
+            if (Keyboard.GetState().IsKeyDown(Keys.D)) robot.moveToState(new RoboState(30, 90, 300));
+            if (Keyboard.GetState().IsKeyDown(Keys.S)) robot.moveToState(new RoboState(30, 50, 200));
+            if (Keyboard.GetState().IsKeyDown(Keys.W)) robot.moveToState(new RoboState(80, 50, 200));
+            //if (Keyboard.GetState().IsKeyDown(Keys.E)) stateTransitionHandler.transitionTo(new RoboState(124, 149, 59));
+            //else if (Keyboard.GetState().IsKeyDown(Keys.D)) stateTransitionHandler.transitionTo(new RoboState(20, 0, 420));
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
+            spriteBatch.GraphicsDevice.SetRenderTarget(viewPort);
             GraphicsDevice.Clear(Color.White);
             spriteBatch.Begin();
 
             robot.draw(spriteBatch);
+            stateTransitionHandler.debugDraw(spriteBatch);
 
+            spriteBatch.End();
+            spriteBatch.GraphicsDevice.SetRenderTarget(null);
+            GraphicsDevice.Clear(Color.White);
+            spriteBatch.Begin();
+
+            spriteBatch.Draw(
+                ((Texture2D) viewPort),
+                Vector2.Zero,
+                null,
+                Color.White,
+                0.0f,
+                Vector2.Zero,
+                1f,
+                SpriteEffects.FlipVertically,
+                0.0f);
             drawDebug(spriteBatch);
+            stateTransitionHandler.debugInfo(spriteBatch);
 
             spriteBatch.End();
             base.Draw(gameTime);
@@ -91,11 +121,12 @@ namespace StemSolvers
 
         public void drawDebug(SpriteBatch spriteBatch)
         {
+            Vector2 mousePos = new Vector2(Mouse.GetState().Position.X, screenBounds.Height - Mouse.GetState().Position.Y);
+
             spriteBatch.DrawString(debugFont, "Pivot Degrees: " + robot.getPivotDegrees() % 360, new Vector2(10, 10), Color.LimeGreen);
             spriteBatch.DrawString(debugFont, "Wrist Degrees: " + robot.getWristDegrees() % 360, new Vector2(10, 30), Color.LimeGreen);
             spriteBatch.DrawString(debugFont, "Telescope Pixel Length: " + robot.getTelescopePixels(), new Vector2(10, 50), Color.LimeGreen);
-            spriteBatch.DrawString(debugFont, "Mouse Pos: " + Mouse.GetState().Position.ToString(), new Vector2(10, 70), Color.LimeGreen);
-            stateTransitionHandler.debugDraw(spriteBatch);
+            spriteBatch.DrawString(debugFont, "Mouse Pos: " + mousePos.ToString(), new Vector2(10, 70), Color.LimeGreen);
         }
     }
 }

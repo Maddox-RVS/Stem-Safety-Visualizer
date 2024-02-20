@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,52 +28,40 @@ namespace StemSolvers
                 state.getTelescopePixels() * (float)Math.Cos(state.getPivotDegrees() * DEGREES_TO_RADIANS),
                 state.getTelescopePixels() * (float)Math.Sin(state.getPivotDegrees() * DEGREES_TO_RADIANS));
 
-            Vector2 wristVector = new Vector2(
-                robot.getUmbrellaLength() * (float)Math.Cos((state.getWristDegrees() * DEGREES_TO_RADIANS) - (state.getPivotDegrees() * DEGREES_TO_RADIANS)),
-                robot.getUmbrellaLength() * -(float)Math.Sin((state.getWristDegrees() * DEGREES_TO_RADIANS) - (state.getPivotDegrees() * DEGREES_TO_RADIANS)));
+            Vector2 umbrellaLengthVector = new Vector2(
+                robot.getUmbrellaLength() * -(float)Math.Cos((state.getWristDegrees() * DEGREES_TO_RADIANS) + (state.getPivotDegrees() * DEGREES_TO_RADIANS)),
+                robot.getUmbrellaLength() * -(float)Math.Sin((state.getWristDegrees() * DEGREES_TO_RADIANS) + (state.getPivotDegrees() * DEGREES_TO_RADIANS)));
 
-            //-----------------------------------------------
-            // temporary - because of different axis in game world vs math world
             wristAxelPoint.X += robot.getTelescopeRect().X;
-            wristAxelPoint.Y = -wristAxelPoint.Y;
             wristAxelPoint.Y += robot.getTelescopeRect().Y;
-            wristVector.Y *= -1.0f;
-            //-----------------------------------------------
 
+            Debug.WriteLine(state.getWristDegrees());
+            Debug.WriteLine(state.getPivotDegrees());
             Vector2 umbrellaBottomLeftPoint = new Vector2(
-                robot.getWristOffsetLength() * (float)Math.Sin((state.getWristDegrees() * DEGREES_TO_RADIANS) - (state.getPivotDegrees() * DEGREES_TO_RADIANS)),
-                robot.getWristOffsetLength() * (float)Math.Cos((state.getWristDegrees() * DEGREES_TO_RADIANS) - (state.getPivotDegrees() * DEGREES_TO_RADIANS)));
-            //-----------------------------------------------
-            // temporary
-            umbrellaBottomLeftPoint.Y *= -1.0f;
-            //-----------------------------------------------
+                robot.getWristOffsetLength() * (float)Math.Cos((state.getWristDegrees() * DEGREES_TO_RADIANS) + (state.getPivotDegrees() * DEGREES_TO_RADIANS)),
+                robot.getWristOffsetLength() * (float)Math.Sin((state.getWristDegrees() * DEGREES_TO_RADIANS) + (state.getPivotDegrees() * DEGREES_TO_RADIANS)));
+            Debug.WriteLine(umbrellaBottomLeftPoint.ToString());
             umbrellaBottomLeftPoint += wristAxelPoint;
+            
+            Debug.WriteLine(wristAxelPoint.ToString());
+            Debug.WriteLine(umbrellaBottomLeftPoint.ToString() + "\n");
 
-            Vector2 umbrellaBottomRightPoint = umbrellaBottomLeftPoint + wristVector;
+            Vector2 umbrellaBottomRightPoint = umbrellaBottomLeftPoint + umbrellaLengthVector;
 
             Vector2 umbrellaTopRightPoint = new Vector2(
-                robot.getUmbrellaHeight() * (float)Math.Sin((state.getWristDegrees() * DEGREES_TO_RADIANS) - (state.getPivotDegrees() * DEGREES_TO_RADIANS)),
-                robot.getUmbrellaHeight() * (float)Math.Cos((state.getWristDegrees() * DEGREES_TO_RADIANS) - (state.getPivotDegrees() * DEGREES_TO_RADIANS)));
-            //-----------------------------------------------
-            // temporary
-            umbrellaTopRightPoint.Y *= -1.0f;
-            //-----------------------------------------------
+                robot.getUmbrellaHeight() * (float)Math.Sin((state.getWristDegrees() * DEGREES_TO_RADIANS) + (state.getPivotDegrees() * DEGREES_TO_RADIANS)),
+                robot.getUmbrellaHeight() * -(float)Math.Cos((state.getWristDegrees() * DEGREES_TO_RADIANS) + (state.getPivotDegrees() * DEGREES_TO_RADIANS)));
             umbrellaTopRightPoint += umbrellaBottomRightPoint;
 
-
             Vector2 umbrellaTopLeftPoint = new Vector2(
-                robot.getUmbrellaHeight() * (float)Math.Sin((state.getWristDegrees() * DEGREES_TO_RADIANS) - (state.getPivotDegrees() * DEGREES_TO_RADIANS)),
-                robot.getUmbrellaHeight() * (float)Math.Cos((state.getWristDegrees() * DEGREES_TO_RADIANS) - (state.getPivotDegrees() * DEGREES_TO_RADIANS)));
-            //-----------------------------------------------
-            // temporary
-            umbrellaTopLeftPoint.Y *= -1.0f;
-            //-----------------------------------------------
+                robot.getUmbrellaHeight() * (float)Math.Sin((state.getWristDegrees() * DEGREES_TO_RADIANS) + (state.getPivotDegrees() * DEGREES_TO_RADIANS)),
+                robot.getUmbrellaHeight() * -(float)Math.Cos((state.getWristDegrees() * DEGREES_TO_RADIANS) + (state.getPivotDegrees() * DEGREES_TO_RADIANS)));
             umbrellaTopLeftPoint += umbrellaBottomLeftPoint;
 
             this.wristAxelPoint = wristAxelPoint;
-            this.umbrellaBottomRightPoint = umbrellaBottomRightPoint;
-            this.umbrellaTopRightPoint = umbrellaTopRightPoint;
-            this.umbrellaTopLeftPoint = umbrellaTopLeftPoint;
+            this.umbrellaBottomRightPoint = umbrellaBottomRightPoint *0;
+            this.umbrellaTopRightPoint = umbrellaTopRightPoint *0;
+            this.umbrellaTopLeftPoint = umbrellaTopLeftPoint *0;
             this.umbrellaBottomLeftPoint = umbrellaBottomLeftPoint;
         }
 

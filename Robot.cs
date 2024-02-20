@@ -36,7 +36,7 @@ namespace StemSolvers
 
             backWallBoundX = 40.0f;
             frontWallBoundX = 650.0f;
-            roofBoundY = 150.0f;
+            roofBoundY = 350.0f;
             floorBoundY = Game1.screenBounds.Height; // should be 0 in real life
             allowedBounds = new Rectangle((int) backWallBoundX, (int) roofBoundY, (int) Math.Abs(backWallBoundX - frontWallBoundX), (int) Math.Abs(roofBoundY - floorBoundY));
 
@@ -91,7 +91,7 @@ namespace StemSolvers
         }
         public float getWristDegrees()
         {
-            return currentWristRads * RADIANS_TO_DEGREES;
+            return 90 - (currentWristRads * RADIANS_TO_DEGREES);
         }
         public void setTelescopePixels(float pixels)
         {
@@ -140,7 +140,7 @@ namespace StemSolvers
         }
         public Rectangle getTelescopeRect()
         {
-            return new Rectangle((int) roboPos.X - 200 + 50, (int) roboPos.Y - 35, (int) currentTelescopePixels, 20);
+            return new Rectangle((int) roboPos.X - 200 + 50, (int) roboPos.Y + 35, (int) currentTelescopePixels, 20);
         }
 
         public Rectangle getAllowedBounds()
@@ -176,30 +176,6 @@ namespace StemSolvers
 
         public void draw(SpriteBatch spriteBatch)
         {
-            //Draws the telescope at the pivot degrees
-            spriteBatch.Draw(
-            texture,
-            new Rectangle((int) roboPos.X - 200 + 50, (int) roboPos.Y - 35, (int) targetTelescopePixels, 20),
-            null,
-            Color.LightGray,
-            -targetPivotRads,
-            new Vector2(0.0f, 0.5f),
-            SpriteEffects.None, 
-            0);
-
-            MechanismPoints mechPtsTarget = new MechanismPoints(new RoboState(targetPivotRads * RADIANS_TO_DEGREES, targetWristRads * RADIANS_TO_DEGREES, targetTelescopePixels), this);
-
-            //Draws the wrist at the wrist degrees
-            spriteBatch.Draw(
-            texture,
-            new Rectangle((int)(mechPtsTarget.umbrellaBottomLeftPoint.X), (int)(mechPtsTarget.umbrellaBottomLeftPoint.Y), (int)wristHeight, (int)wristLength),
-            null,
-            Color.LightGray,
-            (targetWristRads - targetPivotRads) - (90 * DEGREES_TO_RADIANS),
-            new Vector2(0.0f, 0.0f),
-            SpriteEffects.None, 
-            0);
-
             spriteBatch.End();
             spriteBatch.GraphicsDevice.SetRenderTarget(subsystemsRenderTarget);
             spriteBatch.GraphicsDevice.Clear(Color.Transparent);
@@ -211,7 +187,7 @@ namespace StemSolvers
             getTelescopeRect(),
             null,
             Color.CornflowerBlue,
-            -currentPivotRads,
+            currentPivotRads,
             new Vector2(0.0f, 0.5f),
             SpriteEffects.None, 
             0);
@@ -224,8 +200,8 @@ namespace StemSolvers
             new Rectangle((int) (mechPtsCurrent.umbrellaBottomLeftPoint.X), (int) (mechPtsCurrent.umbrellaBottomLeftPoint.Y), (int) wristHeight, (int) wristLength),
             null,
             Color.CornflowerBlue,
-            (currentWristRads - currentPivotRads) - (90 * DEGREES_TO_RADIANS),
-            new Vector2(0.0f, 0.0f),
+            (currentWristRads + currentPivotRads),
+            new Vector2(0.0f, 1.0f),
             SpriteEffects.None, 
             0);
 
@@ -279,8 +255,33 @@ namespace StemSolvers
             0);
 
             spriteBatch.End();
-            spriteBatch.GraphicsDevice.SetRenderTarget(null);
+            spriteBatch.GraphicsDevice.SetRenderTarget(Game1.viewPort);
+            spriteBatch.GraphicsDevice.Clear(Color.White);
             spriteBatch.Begin();
+
+            //Draws the target telescope at the pivot degrees
+            spriteBatch.Draw(
+            texture,
+            new Rectangle((int) roboPos.X - 200 + 50, (int) roboPos.Y + 35, (int) targetTelescopePixels, 20),
+            null,
+            Color.LightGray,
+            targetPivotRads,
+            new Vector2(0.0f, 0.5f),
+            SpriteEffects.None, 
+            0);
+
+            MechanismPoints mechPtsTarget = new MechanismPoints(new RoboState(targetPivotRads * RADIANS_TO_DEGREES, targetWristRads * RADIANS_TO_DEGREES, targetTelescopePixels), this);
+
+            //Draws the target wrist at the wrist degrees
+            spriteBatch.Draw(
+            texture,
+            new Rectangle((int) (mechPtsCurrent.umbrellaBottomLeftPoint.X), (int) (mechPtsCurrent.umbrellaBottomLeftPoint.Y), (int) wristHeight, (int) wristLength),
+            null,
+            Color.LightGray,
+            (currentWristRads + currentPivotRads),
+            new Vector2(0.0f, 1.0f),
+            SpriteEffects.None, 
+            0);
 
             hasCollidedWithDriveBase = calculatePixelCollision(
                 spriteBatch,
@@ -300,12 +301,12 @@ namespace StemSolvers
             //Draws the pivot axel trunion thingy
             spriteBatch.Draw(
             texture,
-            new Rectangle(getTelescopeRect().X, getTelescopeRect().Y + 10, 40, 40),
+            new Rectangle(getTelescopeRect().X, getTelescopeRect().Y - 10, 40, 40),
             null,
             Color.CornflowerBlue,
             45.0f * DEGREES_TO_RADIANS,
             new Vector2(0.5f, 0.5f),
-            SpriteEffects.None, 
+            SpriteEffects.None,
             0);
         }
     }

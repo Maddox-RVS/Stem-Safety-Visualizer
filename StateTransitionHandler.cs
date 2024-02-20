@@ -66,19 +66,19 @@ namespace StemSolvers
         {
             MechanismPoints mechPts = new MechanismPoints(state, robot);
 
-            float wristDriveBaseTopIntercept = getLineIntercept(mechPts.wristAxelPoint, new Vector2(mechPts.umbrellaBottomRightPoint.X + 0.0001f, mechPts.umbrellaBottomRightPoint.Y + 0.0001f), driveBaseRectangle.Top - (driveBaseRectangle.Height / 2));
-            float wristDriveBaseBottomIntercept = getLineIntercept(mechPts.wristAxelPoint, new Vector2(mechPts.umbrellaBottomRightPoint.X + 0.0001f, mechPts.umbrellaBottomRightPoint.Y + 0.0001f), driveBaseRectangle.Bottom - (driveBaseRectangle.Height / 2));
+            float wristDriveBaseTopIntercept = getLineIntercept(mechPts.umbrellaBottomLeftPoint, new Vector2(mechPts.umbrellaBottomRightPoint.X + 0.0001f, mechPts.umbrellaBottomRightPoint.Y + 0.0001f), driveBaseRectangle.Top - (driveBaseRectangle.Height / 2));
+            float wristDriveBaseBottomIntercept = getLineIntercept(mechPts.umbrellaBottomLeftPoint, new Vector2(mechPts.umbrellaBottomRightPoint.X + 0.0001f, mechPts.umbrellaBottomRightPoint.Y + 0.0001f), driveBaseRectangle.Bottom - (driveBaseRectangle.Height / 2));
 
             float telescopeDriveBaseTopIntercept = getLineIntercept(new Vector2(robot.getTelescopeRect().X + 0.0001f, robot.getTelescopeRect().Y + 0.0001f), mechPts.wristAxelPoint, driveBaseRectangle.Top - (driveBaseRectangle.Height / 2));
             float telescopeDriveBaseBottomIntercept = getLineIntercept(new Vector2(robot.getTelescopeRect().X + 0.0001f, robot.getTelescopeRect().Y + 0.0001f), mechPts.wristAxelPoint, driveBaseRectangle.Bottom - (driveBaseRectangle.Height / 2));
 
             bool topWristIntInBase = (wristDriveBaseTopIntercept <= driveBaseRectangle.Right - (driveBaseRectangle.Width / 2) && wristDriveBaseTopIntercept >= driveBaseRectangle.Left - (driveBaseRectangle.Width / 2));
             bool bottomWristIntInBase = (wristDriveBaseBottomIntercept <= driveBaseRectangle.Right - (driveBaseRectangle.Width / 2) && wristDriveBaseBottomIntercept >= driveBaseRectangle.Left - (driveBaseRectangle.Width / 2));
-            bool isWristRightPointsBelowBase = (mechPts.umbrellaBottomRightPoint.Y >= driveBaseRectangle.Top - (driveBaseRectangle.Height / 2)) || mechPts.umbrellaTopRightPoint.Y >= driveBaseRectangle.Top - (driveBaseRectangle.Height / 2);
+            bool isWristRightPointsBelowBase = (mechPts.umbrellaBottomRightPoint.Y <= driveBaseRectangle.Top - (driveBaseRectangle.Height / 2)) || mechPts.umbrellaTopRightPoint.Y <= driveBaseRectangle.Top - (driveBaseRectangle.Height / 2);
 
             bool topTeleIntInBase = (telescopeDriveBaseTopIntercept <= driveBaseRectangle.Right - (driveBaseRectangle.Width / 2) && telescopeDriveBaseTopIntercept >= driveBaseRectangle.Left - (driveBaseRectangle.Width / 2));
             bool bottomTeleIntInBase = (telescopeDriveBaseBottomIntercept <= driveBaseRectangle.Right - (driveBaseRectangle.Width / 2) && telescopeDriveBaseBottomIntercept >= driveBaseRectangle.Left - (driveBaseRectangle.Width / 2));
-            bool isTeleEndPointBelowBase = mechPts.wristAxelPoint.Y >= driveBaseRectangle.Top - (driveBaseRectangle.Height / 2);
+            bool isTeleEndPointBelowBase = mechPts.wristAxelPoint.Y <= driveBaseRectangle.Top - (driveBaseRectangle.Height / 2);
 
             if (((isWristRightPointsBelowBase && (topWristIntInBase || bottomWristIntInBase)) || 
                 (isTeleEndPointBelowBase && (topTeleIntInBase || bottomTeleIntInBase))) &&
@@ -86,7 +86,7 @@ namespace StemSolvers
                 !robot.getAllowedBounds().Contains(mechPts.umbrellaBottomLeftPoint) ||
                 !robot.getAllowedBounds().Contains(mechPts.umbrellaBottomRightPoint) ||
                 !robot.getAllowedBounds().Contains(mechPts.umbrellaTopLeftPoint) ||
-                !robot.getAllowedBounds().Contains(mechPts.umbrellaTopRightPoint))) // all the y values should be checked with >= but are opposite because of game world axis
+                !robot.getAllowedBounds().Contains(mechPts.umbrellaTopRightPoint)))
                     return InvalidationReasons.DRIVE_BASE_AND_WALLS;
             if ((isWristRightPointsBelowBase && (topWristIntInBase || bottomWristIntInBase)) || 
                 (isTeleEndPointBelowBase && (topTeleIntInBase || bottomTeleIntInBase)))
@@ -95,7 +95,7 @@ namespace StemSolvers
                 !robot.getAllowedBounds().Contains(mechPts.umbrellaBottomLeftPoint) ||
                 !robot.getAllowedBounds().Contains(mechPts.umbrellaBottomRightPoint) ||
                 !robot.getAllowedBounds().Contains(mechPts.umbrellaTopLeftPoint) ||
-                !robot.getAllowedBounds().Contains(mechPts.umbrellaTopRightPoint)) // all the y values should be checked with >= but are opposite because of game world axis
+                !robot.getAllowedBounds().Contains(mechPts.umbrellaTopRightPoint))
                     return InvalidationReasons.WALLS;
 
             return InvalidationReasons.NONE;
@@ -183,8 +183,8 @@ namespace StemSolvers
         {
             MechanismPoints mechPts = new MechanismPoints(new RoboState(robot.getPivotDegrees(), robot.getWristDegrees(), robot.getTelescopePixels()), robot);
 
-            float wristDriveBaseTopIntercept = getLineIntercept(mechPts.wristAxelPoint, mechPts.umbrellaBottomRightPoint, driveBaseRectangle.Top - (driveBaseRectangle.Height / 2));
-            float wristDriveBaseBottomIntercept = getLineIntercept(mechPts.wristAxelPoint, mechPts.umbrellaBottomRightPoint, driveBaseRectangle.Bottom - (driveBaseRectangle.Height / 2)); 
+            float wristDriveBaseTopIntercept = getLineIntercept(mechPts.umbrellaBottomLeftPoint, mechPts.umbrellaBottomRightPoint, driveBaseRectangle.Top - (driveBaseRectangle.Height / 2));
+            float wristDriveBaseBottomIntercept = getLineIntercept(mechPts.umbrellaBottomLeftPoint, mechPts.umbrellaBottomRightPoint, driveBaseRectangle.Bottom - (driveBaseRectangle.Height / 2)); 
 
             float telescopeDriveBaseTopIntersect = getLineIntercept(new Vector2(robot.getTelescopeRect().X, robot.getTelescopeRect().Y), mechPts.wristAxelPoint, driveBaseRectangle.Top - (driveBaseRectangle.Height / 2));
             float telescopeDriveBaseBottomIntersect = getLineIntercept(new Vector2(robot.getTelescopeRect().X, robot.getTelescopeRect().Y), mechPts.wristAxelPoint, driveBaseRectangle.Bottom - (driveBaseRectangle.Height / 2));
@@ -212,6 +212,17 @@ namespace StemSolvers
 
             spriteBatch.Draw(texture, new Rectangle((int) topTelePos.X - 2, (int) topTelePos.Y - 2, 5, 5), Color.Black);
             spriteBatch.Draw(texture, new Rectangle((int) bottomTelePos.X - 2, (int) bottomTelePos.Y - 5, 5, 5), Color.Black);
+        }
+
+        public void debugInfo(SpriteBatch spriteBatch)
+        {
+            MechanismPoints mechPts = new MechanismPoints(new RoboState(robot.getPivotDegrees(), robot.getWristDegrees(), robot.getTelescopePixels()), robot);
+
+            float wristDriveBaseTopIntercept = getLineIntercept(mechPts.wristAxelPoint, mechPts.umbrellaBottomRightPoint, driveBaseRectangle.Top - (driveBaseRectangle.Height / 2));
+            float wristDriveBaseBottomIntercept = getLineIntercept(mechPts.wristAxelPoint, mechPts.umbrellaBottomRightPoint, driveBaseRectangle.Bottom - (driveBaseRectangle.Height / 2)); 
+
+            Vector2 topWristPos = new Vector2(wristDriveBaseTopIntercept, driveBaseRectangle.Top - (driveBaseRectangle.Height / 2));
+            Vector2 bottomWristPos = new Vector2(wristDriveBaseBottomIntercept,driveBaseRectangle.Bottom - (driveBaseRectangle.Height / 2));
 
             spriteBatch.DrawString(Game1.debugFont, "Current State Valid: " + isValidState(new RoboState(robot.getPivotDegrees(), robot.getWristDegrees(), robot.getTelescopePixels())).ToString(), new Vector2(10, 230), Color.LimeGreen);
             spriteBatch.DrawString(Game1.debugFont, "Top-Int: " + topWristPos.ToString(), new Vector2(10, 90), Color.LimeGreen);
